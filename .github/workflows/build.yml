@@ -1,10 +1,10 @@
 name: CRD Environment Setup
-# Batch-ID: 1762092436977-0.5544005696519325
+# Batch-ID: 1762092711919-0.29204025245859955
 on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Setup Dependencies
         run: |
@@ -17,4 +17,10 @@ jobs:
           & "${Env:PROGRAMFILES(X86)}\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0Ab32j93-vOwrs8XXpLiiuXJ5POWmxrg519kG4knhIWECx3VmEW_9UzzbWHoOMbq_DAkFmw" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=$Env:COMPUTERNAME --pin=& "${Env:PROGRAMFILES(X86)}\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0Ab32j93-vOwrs8XXpLiiuXJ5POWmxrg519kG4knhIWECx3VmEW_9UzzbWHoOMbq_DAkFmw" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=$Env:COMPUTERNAME
       - name: Keep Runner Alive
         run: |
-          Start-Sleep -Seconds 21000
+          $runUntil = (Get-Date).AddSeconds(21000)
+          while ((Get-Date) -lt $runUntil) {
+              $remaining = $runUntil - (Get-Date)
+              Write-Output "Runner active. Time remaining: $($remaining.ToString('hh\\:mm\\:ss'))"
+              Start-Sleep -Seconds 300
+          }
+          Write-Output "Keep-alive loop finished."

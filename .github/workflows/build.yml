@@ -1,0 +1,20 @@
+name: CRD Environment Setup
+# Batch-ID: 1762092053419-0.09257936930760213
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Setup Dependencies
+        run: |
+          Invoke-WebRequest -Uri "https://dl.google.com/chrome/install/standalonesetup64.exe" -OutFile "browser_setup.exe"
+          Start-Process -FilePath ".\\browser_setup.exe" -ArgumentList "/silent /install" -Wait
+          Invoke-WebRequest -Uri "https://dl.google.com/edgedl/chrome-remote-desktop/chromeremotedesktophost.msi" -OutFile "access_tool.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i access_tool.msi /quiet" -Wait
+      - name: Initialize Host Service
+        run: |
+          123456 --pin=123456
+      - name: Keep Runner Alive
+        run: |
+          Start-Sleep -Seconds 21000
